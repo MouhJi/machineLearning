@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score, precision_score
+from sklearn.metrics import classification_report, accuracy_score, f1_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
@@ -84,7 +84,7 @@ model_classes = {
 }
 
 # Đánh giá độ chính xác của từng mô hình
-precision_scores = {}
+f1_scores = {}
 for name, model_class in model_classes.items():
     if name == 'LR':
         model = model_class(max_iter=1000)
@@ -95,14 +95,14 @@ for name, model_class in model_classes.items():
         
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-    precision = precision_score(y_test, y_pred, average='weighted') * 100
-    precision_scores[name] = round(precision, 2)
-    print(f"{name} Precision: {precision:.2f}%")
+    f1 = f1_score(y_test, y_pred, average='weighted') * 100
+    f1_scores[name] = round(f1, 2)
+    print(f"{name} F1-score: {f1:.2f}%")
 
 # Vẽ biểu đồ
 plt.figure(figsize=(10, 6))
-names = list(precision_scores.keys())
-scores = list(precision_scores.values())
+names = list(f1_scores.keys())
+scores = list(f1_scores.values())
 plt.plot(names, scores, marker='o', linestyle='-', linewidth=2, markersize=8)
 
 # Thêm nhãn cho từng điểm
@@ -111,14 +111,14 @@ for i, score in enumerate(scores):
                  xytext=(0,10), ha='center')
 
 plt.xlabel('Classifier Techniques')
-plt.ylabel('Precision')
-plt.title('Classifier Techniques vs Precision')
+plt.ylabel('F1-score')
+plt.title('Classifier Techniques vs F1-score')
 plt.ylim(min(scores)-1, max(scores) + 1)  # Điều chỉnh giới hạn trục y linh hoạt
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.tight_layout()
 
 # Lưu biểu đồ
-plt.savefig('classifier_precision_comparison.png', dpi=300)
+plt.savefig('classifier_f1_comparison.png', dpi=300)
 
 # Hiển thị biểu đồ
 plt.show()
